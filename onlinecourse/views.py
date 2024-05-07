@@ -113,7 +113,7 @@ def submit(request, course_id):
         selected_choices_ids = extract_answers(request)
         submission.choices.set(selected_choices_ids)
         return HttpResponseRedirect(reverse(
-            viewname="onlinecourse:exam_results",
+            viewname="onlinecourse:exam_result",
             args=(course_id, submission.id,)
         ))
 
@@ -135,19 +135,19 @@ def show_exam_result(request, course_id, submission_id):
     submission = Submission.objects.get(id=submission_id)
     choices = submission.choices.all()
     context['course'] = course
-    context['grade'] = grade_exam(choices)
+    context['grade'] = grade_exam(course, choices)
     context['choices'] = choices
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
 
 
 # function to calculate grade for the exam
-def grade_exam(choices):
+def grade_exam(course, selected_choices):
     grade = 0
-    checked_questions_ids = []
-    for choice in choices:
-        question = choice.question
-        if question.id in checked_questions_ids:
-            continue
-        if question.is_answered_correctly():
+    questions = course.question_set.all()
+    for question in questions:
+        print("QUESTION:", question.content)
+        if question.is_answered_correctly(selected_choices):
             grade += question.grade
+            print("CORRECT")
+        print("GRADE:", grade)
     return grade

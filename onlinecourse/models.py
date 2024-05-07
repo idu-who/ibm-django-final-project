@@ -113,7 +113,7 @@ class Question(models.Model):
         correct_selected_choices_count = self.choice_set.filter(
             is_correct=True,
             id__in=selected_choices_ids
-        )
+        ).count()
 
         if correct_choices_count == correct_selected_choices_count:
             return True
