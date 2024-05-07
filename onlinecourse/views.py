@@ -145,9 +145,6 @@ def grade_exam(course, selected_choices):
     grade = 0
     questions = course.question_set.all()
     for question in questions:
-        print("QUESTION:", question.content)
         if question.is_answered_correctly(selected_choices):
             grade += question.grade
-            print("CORRECT")
-        print("GRADE:", grade)
     return grade
